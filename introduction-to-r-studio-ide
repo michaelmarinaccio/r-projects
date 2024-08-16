@@ -1,0 +1,11 @@
+x <- c(1, 2, 3, 4, 5)
+y <- c(1, 4, 9, 16, 25)
+
+plot(x, y) #plots x and y values on a simple plot
+plot(x, y, type ="b") #plots x and y values on a simple plot with lines connecting the points
+
+read.csv("my_data.csv") #reads in a csv file
+
+install.packages("nycdlights13") #installs a package
+
+hist(flights$distance) #creates a histogram of a data set (flights) for a given column name (distance)
