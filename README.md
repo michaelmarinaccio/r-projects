@@ -1,2 +1,2 @@
 # r-projects
-# This is a repository for projects performed in the Codecademy "Learn R" course
+# This is a repository for projects completed in the Codecademy "Learn R" course
