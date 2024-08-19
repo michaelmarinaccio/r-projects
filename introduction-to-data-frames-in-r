@@ -1,0 +1,392 @@
+#------------------------introduction---------------------------
+
+---
+title: "Introduction to Data Frames"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+library(readr)
+```
+
+```{r}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# inspect data frame
+artists
+head(artists)
+summary(artists)
+```
+
+```{r}
+# select columns, filter and arrange rows of artists
+artists_manipulated <- artists %>% 
+  select(-country,-year_founded,-albums) %>% 
+  filter(spotify_monthly_listeners > 20000000, genre != 'Hip Hop') %>% 
+  arrange(desc(youtube_subscribers))
+artists_manipulated
+```
+
+#------------------------what is a data frame?---------------------------
+
+#A data frame is an R object that stores tabular data in a table structure made up of rows and columns.
+#Tibbles are modern versions of data frames in R, and they operate in essentially the same way. The terms tibble and data frame are often used interchangeably. 
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r}
+# load data frame
+songs <- read_csv('songs.csv')
+```
+
+```{r}
+songs
+```
+
+#------------------------CSVs---------------------------
+
+name,cake_flavor,frosting_flavor,topping
+"Red Velvet Cake","chocolate","cream cheese","strawberries"
+"Birthday Cake","vanilla","vanilla","rainbow sprinkles"
+"Carrot Cake","carrot","cream cheese","almonds"
+
+#------------------------loading and saving CSVs---------------------------
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r}
+# load data frame
+artists <- read_csv("artists.csv")
+artists
+```
+
+#You can also save data from a data frame to a CSV using readr‘s write_csv() function: write_csv(df,'new_csv_file.csv')
+#In the example above, write_csv() takes two arguments:
+#1) df, which represents a data frame object
+#2) new_csv_file.csv, the name of the CSV file that will hold the data from the data frame
+#By default, this method will save the CSV file to your current directory.
+
+#------------------------inspecting data frames---------------------------
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# inspect data frame
+artists
+head(artists) #returns first 6 rows
+summary(artists)
+```
+
+#------------------------piping---------------------------
+
+#The pipe operator, or %>%, helps increase the readability of data frame code by piping the value on its left into the first argument of the function that follows it.
+#Note: the pipe operator is not a part of base R. It comes from the magrittr package, but do not worry about loading magrittr in your code. 
+#Any time you load a package from the tidyverse, like dplyr, %>% will automatically be loaded!
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# inspect data frame with pipe
+artists %>%
+  head()
+
+```
+
+#------------------------selecting columns---------------------------
+
+#You can select the appropriate columns for your analysis using dplyr‘s select() function: select(customers,age,gender)
+#select() takes a data frame as its first argument
+#all additional arguments are the desired columns to select
+#select() returns a new data frame containing only the desired columns
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# select one column
+
+artist_groups <- select(artists, group)
+artist_groups
+```
+
+```{r}
+# select multiple columns
+
+group_info <- select(artists, group, spotify_monthly_listeners, year_founded)
+group_info
+```
+
+#------------------------excluding columns---------------------------
+
+#To exclude the columns you do not need: select(customers,-name,-phone)
+#select() takes a data frame as its first argument
+#the columns to remove, prepended with a -, are given as arguments
+#a new data frame without the name and phone columns is returned
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# select all columns except one
+
+no_albums <- select(artists, -albums)
+no_albums
+```
+
+```{r}
+# select all columns except a set
+
+df_cols_removed <- select(artists, -genre, -spotify_monthly_listeners, -year_founded)
+df_cols_removed
+```
+
+#------------------------filtering rows with logic I---------------------------
+
+#Let’s say you want to find all orders made by customers with the first name 'Joyce'.: filter(orders, first_name == 'Joyce')
+#the condition first_name == 'Joyce' is given as an argument
+#a new data frame containing only the rows where first_name == 'Joyce' is returned
+
+#What if you have multiple conditions you want to be met? Not a problem! To find all orders made of faux-leather AND costing more than 25: 
+#filter(orders, shoe_material == 'faux-leather',price > 25)
+#the conditions shoe_material == 'faux-leather' and price > 25 are given as arguments
+#a new data frame containing only the rows where both conditions were met is returned
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# filter rows one condition
+
+rock_groups <- filter(artists, genre == "Rock")
+rock_groups
+```
+
+```{r}
+# filter rows multiple conditions
+
+popular_rock_groups <- filter(artists, genre == "Rock", spotify_monthly_listeners > 20000000)
+popular_rock_groups
+```
+
+#------------------------filtering rows with logic II---------------------------
+
+#You are interested in seeing all orders that were for 'clogs' OR that cost less than 20. Using the or operator (|):
+
+#orders %>%
+#  filter(shoe_type == 'clogs' | price < 20)
+
+#the orders data frame is piped into filter()
+#the compound conditional statement shoe_type == 'clogs' OR price < 20 is given as an argument
+#a new data frame is returned containing only rows where shoe_type is 'clogs' or price is less than 20
+
+#What if you want to find all orders where shoes in any color but red were purchased. Using the not or bang operator (!):
+
+#orders %>%
+#  filter(!(shoe_color == 'red'))
+
+#orders is again piped into filter()
+#the condition that should not be met is wrapped in parentheses, preceded by !, and given as an argument to filter()
+#a new data frame is returned containing only rows where shoe_color is not 'red'
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# filter rows with or
+
+korea_or_before_2000 <- filter(artists, country == "South Korea" | year_founded < 2000)
+korea_or_before_2000
+```
+
+```{r}
+# filter rows with not !
+
+not_rock_groups <- filter(artists, !(genre == "Rock"))
+not_rock_groups
+```
+
+#------------------------arranging rows---------------------------
+
+#arrange(df, arg) will sort the rows of a data frame in ascending order by the column provided as an argument.
+#arrange(df, desc(arg)) will sort the rows of a data frame in descending order by the column provided as an argument.
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# arrange rows in ascending order
+
+group_asc <- arrange(artists, group)
+group_asc
+```
+
+```{r}
+# arrange rows in descending order
+
+youtube_desc <- arrange(artists, desc(youtube_subscribers))
+youtube_desc
+```
+
+#------------------------review---------------------------
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# select columns
+chosen_cols <- artists %>% 
+  select(-country,-year_founded,-albums)
+head(chosen_cols)
+```
+
+```{r}
+# filter rows
+popular_not_hip_hop <- chosen_cols %>% 
+  filter(spotify_monthly_listeners > 20000000, genre != 'Hip Hop') 
+head(popular_not_hip_hop)
+```
+
+```{r}
+# arrange rows
+youtube_desc <- popular_not_hip_hop %>% 
+  arrange(desc(youtube_subscribers))
+head(youtube_desc)
+```
+
+```{r}
+# select columns, filter and arrange rows
+artists <- artists %>%
+ select(-country, -year_founded, -albums) %>%
+ filter(spotify_monthly_listeners > 20000000, !(genre == "Hip Hop")) %>%
+ arrange(desc(youtube_subscribers))
+head(artists)
+```
