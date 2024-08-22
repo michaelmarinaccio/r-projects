@@ -1,0 +1,206 @@
+#------------------------diagnose the data------------------------
+
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# read CSVs
+grocery_1 <- read_csv('grocery_1.csv')
+grocery_2 <- read_csv('grocery_2.csv')
+```
+
+```{r}
+# inspect data frames
+head(grocery_1)
+head(grocery_2)
+
+```
+
+```{r}
+# clean data frame
+clean_data_frame <- 2
+
+```
+
+#------------------------dealing with multiple files------------------------
+
+You can combine the base R functions list.files() and lapply() with readr and dplyr to organize this data better, as shown below:
+
+files <- list.files(pattern = "file_.*csv")
+df_list <- lapply(files,read_csv)
+df <- bind_rows(df_list)
+
+The first line uses list.files() and a regular expression, a sequence of characters describing a pattern of text that should be matched,
+to find any file in the current directory that starts with 'file_' and has an extension of csv, storing the name of each file in a vector files
+The second line uses lapply() to read each file in files into a data frame with read_csv(), storing the data frames in df_list
+The third line then concatenates all of those data frames together with dplyr’s bind_rows() function
+
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r}
+# list files
+student_files <- list.files(pattern = "exams_.*csv")
+
+```
+
+```{r message=FALSE}
+# read files
+df_list <- lapply(student_files, read_csv)
+```
+
+```{r}
+# concatenate data frames
+students <- bind_rows(df_list)
+
+```
+
+```{r}
+# number of rows in students
+nrow_students <- nrow(students)
+nrow_students
+```
+
+#------------------------reshaping your data------------------------
+
+We can use tidyr’s gather() function to do this transformation. gather() takes a data frame and the columns to unpack:
+
+df %>%
+  gather('Checking','Savings',key='Account Type',value='Amount')
+
+The arguments you provide are:
+
+df: the data frame you want to gather, which can be piped into gather()
+Checking and Savings: the columns of the old data frame that you want to turn into variables
+key: what to call the column of the new data frame that stores the variables
+value: what to call the column of the new data frame that stores the values
+
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# original column names
+original_col_names <- colnames(students)
+original_col_names
+```
+
+```{r}
+# gather columns
+students <- students %>%
+  gather("fractions", "probability", key = "exam", value = "score")
+head(students)
+```
+
+```{r}
+# updated column names
+gathered_col_names <- colnames(students)
+gathered_col_names
+```
+
+```{r}
+# unique value counts of exam
+exam_counts <- count(students, exam)
+exam_counts
+
+```
+
+#------------------------dealing with duplicates------------------------
+
+To check for duplicates, we can use the base R function duplicated(), which will return a logical vector telling us which rows are duplicate rows.
+If we call fruits %>% duplicated(), we would get the following vector:
+>> [1] FALSE FALSE TRUE FALSE FALSE FALSE
+We can use the dplyr distinct() function to remove all rows of a data frame that are duplicates of another row.
+If we call fruits %>% distinct():
+The "apple" row was deleted because it was exactly the same as another row. But the two "peach" rows remain because there is a difference in the price column.
+If we wanted to remove every row with a duplicate value in the item column, we could specify a subset:
+fruits %>%
+  distinct(item,.keep_all=TRUE)
+By default, this keeps the first occurrence of the duplicate.
+
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# drop id column
+students <- students %>%
+  select(-id)
+head(students)
+```
+
+```{r}
+# find duplicated rows
+duplicates <- students %>%
+  duplicated()
+```
+
+```{r}
+# count duplicated rows
+duplicate_counts <- duplicates %>%
+  table()
+duplicate_counts
+```
+
+```{r}
+# remove duplicated rows, keep unique rows
+unique_students <- students %>%
+  distinct()
+```
+
+```{r}
+# find and count duplicated rows in updated data frame
+updated_duplicates <- unique_students %>%
+  duplicated() %>%
+  table()
+updated_duplicates
+```
+
+#------------------------splitting by index------------------------
+
+
+
+
+#------------------------dealing with multiple files------------------------
+
+#------------------------dealing with multiple files------------------------
