@@ -1,0 +1,308 @@
+#-------------------------layers and geoms-----------------------
+
+A key component to understand is that in ggplot2, geoms are “added” as layers to the original canvas which is just an empty plot with data associated to it.
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+movies <- read_csv("imdb.csv")
+```
+
+```{r}
+# Observe layers being added with the + sign
+viz <- ggplot(data=movies, aes(x=imdbRating, y=nrOfWins)) +
+       geom_point(aes(color=nrOfGenre), alpha=0.5) + 
+       labs(title="Movie Ratings Vs Award Wins", subtitle="From IMDB dataset", y="Number of Award Wins", x="Movie Rating", color = "Number of Genre")
+
+
+# Prints the plot
+viz
+```
+
+#-------------------------the ggplot() function-----------------------
+
+As we mentioned, at its heart, a ggplot visualization is a combination of layers that each display information or add style to the final graph. 
+You “add” these layers to a starting canvas, or ggplot object, with a + sign. We’ll add geometries and aesthetics in the next exercises. 
+For now, let’s stop to understand that any arguments inside the ggplot() function call are inherited by the rest of the layers on the plot.
+
+Here we invoke ggplot() to create a ggplot object and assign the dataframe df, saving it inside a variable named viz:
+viz <- ggplot(data=df)
+viz
+
+#-------------------------associating the data-----------------------
+
+Data is bound to a ggplot2 visualization by passing a data frame as the first argument in the ggplot() function call. 
+You can include the named argument like ggplot(data=df_variable) or simply pass in the data frame like ggplot(data frame).
+
+For example, assume we have a data frame sales with the columns cost and profit. 
+In this example, we assign the data frame sales to the ggplot() object that is initailized:
+
+viz <- ggplot(data=sales) + 
+       geom_point(aes(x=cost, y=profit))
+viz # renders plot
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+movies <- read_csv("imdb.csv")
+```
+
+```{r}
+#Define variable and print it
+viz <- ggplot(data=movies)
+viz
+```
+
+```{r message=FALSE}
+```
+
+#-------------------------what are aesthetics?-----------------------
+
+Aesthetics can include things like the scales for the x and y axes, the color of the data on the plot based on a property or simply on a color preference, 
+or the size or shape of different geometries.
+
+There are two ways to set aesthetics, by manually specifying individual attributes or by providing aesthetic mappings. 
+We’ll explore aesthetic mappings first and come back to manual aesthetics later in the lesson. 
+
+Aesthetic mappings “map” variables from the data frame to visual properties in the plot. You can provide aesthetic mappings in two ways using the aes() mapping function:
+  At the canvas level: All subsequent layers on the canvas will inherit the aesthetic mappings you define when you create a ggplot object with ggplot().
+  At the geom level: Only that layer will use the aesthetic mappings you provide.
+
+Let’s discuss inherited aesthetics first, or aesthetics you define at the canvas level. 
+Here’s an example of code that assigns aes() mappings for the x and y scales at the canvas level:
+viz <- ggplot(data=airquality, aes(x=Ozone, y=Temp)) +
+       geom_point() + 
+       geom_smooth()
+
+In the example above:
+The aesthetic mapping is wrapped in the aes() aesthetic mapping function as an additional argument to ggplot().
+Both of the subsequent geom layers, geom_point() and geom_smooth() use the scales defined inside the aesthetic mapping assigned at the canvas level.
+You should set aesthetics for subsequent layers at the canvas level if all layers will share those aesthetics.
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+movies <- read_csv("imdb.csv")
+```
+
+```{r}
+#Create aesthetic mappings at the canvas level
+viz <- ggplot(data=movies, aes(x=imdbRating, y=nrOfWins))
+viz
+```
+
+```{r message=FALSE}
+```
+
+#-------------------------adding geoms-----------------------
+
+The following code adds a scatterplot layer to the visualization:
+viz <- ggplot(data=df, aes(x=col1,y=col2)) +
+       geom_point()
+
+In the code above:
+Notice the layer is being added by using a + sign which comes after the ggplot object is created, and it comes on the same line.
+The geom_point() function call is what adds the points layer to the plot. This call can take arguments but we are keeping it simple for now.
+
+Another popular layer that allows you to eye patterns in the data by completing a line of best fit is the geom_smooth() layer. 
+This layer, by nature, comes with a gray error band. You could add a smooth layer to the plot by typing the following:
+viz <- ggplot(data=df, aes(x=col1,y=col2)) +
+       geom_point() + 
+       geom_smooth()
+
+Notice that you can add layers one on top of the other. We added the smooth line after adding the geom_point() layer. 
+We could have just included the point layer, or just the line-of-best-fit layer. 
+But the combination of the two enhances our visual understanding of the data, so they make a great pairing.
+It is nice to put each layer on its own line although it is not necessary, since it improves readability in the long run if you’re collaborating with other people.
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+movies <- read_csv("imdb.csv")
+```
+
+```{r}
+# Add a geom point layer
+viz <- ggplot(data=movies, aes(x=imdbRating, y=nrOfWins)) +
+geom_point()
+
+# Prints the plot
+viz
+```
+
+```{r message=FALSE}
+```
+
+#-------------------------geom aesthetics-----------------------
+
+Let’s explore the aesthetic mappings for the geom_point() layer. What if we wanted to color-code the points on the scatterplot based on a property? 
+It’s possible to customize the color by passing in an aes() aesthetic mapping with the color based on a data-driven property. Observe this example:
+viz <- ggplot(data=airquality, aes(x=Ozone, y=Temp)) +
+       geom_point(aes(color=Month)) + 
+       geom_smooth()
+
+The code above would only change the color of the point layer, it would not affect the color of the smooth layer since the aes() aesthetic mapping is passed at the point layer.
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+movies <- read_csv("imdb.csv")
+```
+
+```{r}
+# Add manual alpha aesthetic mapping
+viz <- ggplot(data=movies, aes(x=imdbRating, y=nrOfWins)) + geom_point(aes(color=nrOfGenre)) 
+# Prints the plot
+viz
+```
+
+```{r message=FALSE}
+```
+
+#-------------------------manual aesthetics-----------------------
+
+If you have a pre-determined value in mind, you provide a named aesthetic parameter and the value for that property without wrapping it in an aes(). 
+For example, if you wanted to make all the points on the scatter plot layer dark red because that’s in line with the branding of the visualization you are preparing, 
+you could simply pass in a color parameter with a manual value darkred or any color value like so:
+viz <- ggplot(data=airquality, aes(x=Ozone, y=Temp)) +
+       geom_point(color="darkred")  
+
+Note that we did not wrap the color argument inside aes() because we are manually setting that aesthetic. 
+Here are more aesthetics for the geom_point() layer: x, y, alpha, color, fill, group, shape, size, stroke. 
+The alpha aesthetic describes opacity of the points, and the shape of the dots could be different than a dot.
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+movies <- read_csv("imdb.csv")
+```
+
+```{r}
+# Add manual alpha aesthetic mapping
+viz <- ggplot(data=movies, aes(x=imdbRating, y=nrOfWins)) +
+       geom_point(aes(color=nrOfGenre), alpha = .5) 
+# Prints the plot
+viz
+```
+
+```{r message=FALSE}
+```
+
+#-------------------------labels-----------------------
+
+If you wish to customize your labels, you can add a labs() function call to your ggplot object. 
+Inside the function call to labs() you can provide new labels for the x and y axes as well as a title, subtitle, or caption.
+
+The following labs() function call and these specified arguments would render the following plot:
+viz <- ggplot(df, aes(x=rent, y=size_sqft)) + 
+       geom_point() +
+       labs(title="Monthly Rent vs Apartment Size in Brooklyn, NY", subtitle="Data by StreetEasy (2017)", x="Monthly Rent ($)", y="Apartment Size (sq ft.)")
+viz
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+movies <- read_csv("imdb.csv")
+```
+
+```{r}
+# Add labels as specified
+viz <- ggplot(data=movies, aes(x=imdbRating, y=nrOfWins)) +
+       geom_point(aes(color=nrOfGenre), alpha=0.5) +
+       labs(title = "Movie Ratings Vs Award Wins", subtitle = "From IMDB dataset", x = "Movie Rating", y = "Number of Award Wins", color = "Number of Genre")
+# Prints the plot
+viz
+```
+
+```{r message=FALSE}
+```
+
+#-------------------------extending the grammar-----------------------
+
+The geom_bar() layer adds a bar chart to the canvas. Typically when creating a bar chart, you assign an aes() aesthetic mapping with 
+a single categorical value on the x axes and the aes() function will compute the count for each category and display the count values on the y axis.
+
+Since we’re extending the grammar of graphics, let’s also learn about how to save our visuals as local image files.
+
+The following code maps the count of each category in the Language column in a dataset of 100 popular books to a bar length 
+and then saves the visualization as a .png file named "bar-example.png":
+
+bar <- ggplot(books, aes(x=Language)) + geom_bar()
+bar
+ggsave("bar-example.png")
+
+Note: The ggsave() function allows you to save visualizations as a local file with the name of your choice. It’s a useful function when developing visualizations locally.
+
+---
+title: "Intro To GGPlot2"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries and data
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+# Inspect the mpg builtin dataset
+head(mpg)
+```
+
+```{r message=FALSE}
+#Create a bar chart
+bar <- ggplot(data=mpg, aes(x=class)) +
+      geom_bar(aes(fill=class)) +
+      labs(title = "Types of Vehicles", subtitle = "From fuel economy data for popular car models (1999-2008)")
+bar
+```
