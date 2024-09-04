@@ -1,0 +1,239 @@
+#-----------------------------quartiles-----------------------------
+
+A common way to communicate a high-level overview of a dataset is to find the values that split the data into four groups of equal size.
+By doing this, we can then say whether a new datapoint falls in the first, second, third, or fourth quarter of the data.
+The values that split the data into fourths are the quartiles.
+Those values are called the first quartile (Q1), the second quartile (Q2), and the third quartile (Q3).
+
+---
+title: "Quartiles"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(ggplot2)
+```
+
+```{r}
+# load song data
+load("songs.Rda")
+```
+
+```{r message=FALSE}
+# plot histogram
+hist <- qplot(songs,
+              geom="histogram",
+              main = 'Histogram of Song Lengths',
+              xlab = 'Song Length (Seconds)',
+              ylab = 'Count',
+              fill=I("blue"),
+              col=I("red"),
+              alpha=I(.2)) +
+ 				geom_vline(aes(xintercept=364,
+                       color=I("blue")),
+                   linetype="solid",
+                   size=1,
+                   show.legend=T) +
+				scale_colour_manual(name = "",
+                            labels =c("Chicago"),
+                            values=c("blue"))
+
+hist
+```
+
+#-----------------------------the second quartile-----------------------------
+
+Let’s begin by finding the second quartile (Q2). Q2 happens to be exactly the median. Half of the data falls below Q2 and half of the data falls above Q2.
+---
+title: "Quartiles"
+output: html_notebook
+---
+
+```{r}
+dataset_one <- c(50, 10, 4, -3, 4, -20, 2)
+# sorted dataset_one: c(-20, -3, 2, 4, 4, 10, 50)
+dataset_one_q2 <- 4
+dataset_two <- c(24, 20, 1, 45, -15, 40)
+
+# define the second quartile of both datasets here:
+#sorted dataset_two: c(-15, 1, 20, 24, 40, 45)
+dataset_one_q2 <- 4
+dataset_two_q2 <- 22
+```
+
+```{r}
+# ignore the code below here:
+
+tryCatch(print(paste("The second quartile of dataset one is",dataset_one_q2)), error=function(e) {print("You haven't defined dataset_one_q2")})
+         
+tryCatch(print(paste("The second quartile of dataset two is",dataset_two_q2)), error=function(e) {print("You haven't defined dataset_two_q2")})
+```
+
+#-----------------------------q1 and q3-----------------------------
+
+To find Q1, we take all of the data points smaller than Q2 and find the median of those points.
+To find Q3, do the same process using the points that are larger than Q2.
+
+---
+title: "Quartiles"
+output: html_notebook
+---
+
+```{r}
+dataset_one <- c(50, 10, 4, -3, 4, -20, 2)
+# sorted dataset_one: [-20, -3, 2, 4, 4, 10, 50]
+
+dataset_two <- c(24, 20, 1, 45, -15, 40)
+#sorted dataset_two: c(-15, 1, 20, 24, 40, 45)
+dataset_one_q2 <- 4
+dataset_two_q2 <- 22
+
+# define the first and third quartile of both datasets here:
+dataset_one_q1 <- -3
+dataset_two_q1 <- 1
+dataset_one_q3 <- 10
+dataset_two_q3 <- 40
+```
+
+```{r}
+# ignore the code below here:
+
+tryCatch(print(paste("The first quartile of dataset one is",dataset_one_q1)), error=function(e) {print("You haven't defined dataset_one_q1")})
+
+tryCatch(print(paste("The third quartile of dataset one is",dataset_one_q3)), error=function(e) {print("You haven't defined dataset_one_q3")})
+         
+tryCatch(print(paste("The first quartile of dataset two is",dataset_two_q1)), error=function(e) {print("You haven't defined dataset_two_q1")})
+
+tryCatch(print(paste("The third quartile of dataset two is",dataset_two_q3)), error=function(e) {print("You haven't defined dataset_two_q3")})
+```
+
+#-----------------------------method 2: including q2-----------------------------
+
+---
+title: "Quartiles"
+output: html_notebook
+---
+
+```{r}
+dataset_one <- c(50, 10, 4, -3, 4, -20, 2)
+# sorted dataset_one: [-20, -3, 2, 4, 4, 10, 50]
+
+dataset_two <- c(24, 20, 1, 45, -15, 40)
+#sorted dataset_two: c(-15, 1, 20, 24, 40, 45)
+dataset_one_q2 <- 4
+dataset_two_q2 <- 22
+
+# define the first and third quartile of both datasets here:
+dataset_one_q1 <- -0.5
+dataset_two_q1 <- 1
+dataset_one_q3 <- 7 
+dataset_two_q3 <- 40
+```
+
+```{r}
+# ignore the code below here:
+
+tryCatch(print(paste("The first quartile of dataset one is",dataset_one_q1)), error=function(e) {print("You haven't defined dataset_one_q1")})
+
+tryCatch(print(paste("The third quartile of dataset one is",dataset_one_q3)), error=function(e) {print("You haven't defined dataset_one_q3")})
+         
+tryCatch(print(paste("The first quartile of dataset two is",dataset_two_q1)), error=function(e) {print("You haven't defined dataset_two_q1")})
+
+tryCatch(print(paste("The third quartile of dataset two is",dataset_two_q3)), error=function(e) {print("You haven't defined dataset_two_q3")})
+```
+
+#-----------------------------quartiles in r-----------------------------
+
+The base R function that we’ll be using is named quantile(). You can learn more about quantiles in our quantiles lesson, 
+but for right now all you need to know is that a quartile is a specific kind of quantile.
+The code below calculates the third quartile of the given dataset:
+
+dataset <- c(50, 10, 4, -3, 4, -20, 2)
+third_quartile <- quantile(dataset, 0.75)
+
+The quantile() function takes two parameters. The first is the dataset you’re interested in. The second is a number between 0 and 1. 
+Since we calculated the third quartile, we used 0.75 — we want the point that splits the first 75% of the data from the rest.
+For the second quartile, we’d use 0.5. This will give you the point that 50% of the data is below and 50% is above.
+
+---
+title: "Quartiles"
+output: html_notebook
+---
+
+```{r}
+# load song data
+load("songs.Rda")
+```
+
+```{r}
+# create the variables songs_q1, songs_q2, and songs_q3 here:
+songs_q1 <- quantile(songs, 0.25)
+songs_q2 <- quantile(songs, 0.5)
+songs_q3 <- quantile(songs, 0.75)
+```
+
+```{r}
+# create the variables favorite_song and quarter here:
+favorite_song <- 613
+quarter <- 4
+```
+
+```{r}
+# ignore the code below here:
+
+tryCatch(print(paste("The first quartile of dataset one is",songs_q1)), error=function(e) {print("You haven't defined songs_q1")})
+
+tryCatch(print(paste("The second quartile of dataset two is",songs_q2)), error=function(e) {print("You haven't defined songs_q2")})
+
+tryCatch(print(paste("The third quartile of dataset one is",songs_q3)), error=function(e) {print("You haven't defined songs_q3")})
+```
+
+#-----------------------------review-----------------------------
+
+---
+title: "Quartiles"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(ggplot2)
+```
+
+```{r}
+# load song data
+load("songs.Rda")
+```
+
+```{r message=FALSE}
+# plot histogram
+hist <- qplot(songs,
+              geom="histogram",
+              main = 'Histogram of Song Lengths',
+              xlab = 'Song Length (Seconds)',
+              ylab = 'Count',
+              fill=I("blue"),
+              col=I("red"),
+              alpha=I(.2)) +
+        geom_vline(aes(xintercept=quantile(songs,0.25),
+                       color=I("blue")),
+                   linetype="solid",
+                   size=1,
+                   show.legend=T) +
+				geom_vline(aes(xintercept=quantile(songs,0.5),
+                       color=I("purple")),
+                   linetype="solid",
+                   size=1,
+                   show.legend=T) +
+  			geom_vline(aes(xintercept=quantile(songs,0.75),
+                       color=I("yellow")),
+                   linetype="solid",
+                   size=1,
+                   show.legend=T) + 
+				scale_colour_manual(name = "",
+                            labels =c("Q1","Q2","Q3"),
+                            values=c("blue","purple","yellow"))
+
+hist
+```
