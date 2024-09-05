@@ -1,0 +1,139 @@
+#--------------------------------range review--------------------------------
+
+The interquartile range (IQR) is a descriptive statistic that tries to solve this problem (of outliers). 
+The IQR ignores the tails of the dataset, so you know the range around-which your data is centered.
+
+---
+title: "Interquartile Range"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(ggplot2)
+```
+
+```{r}
+# load song data
+load("songs.Rda")
+```
+
+```{r}
+# find maximum and minimum song lengths
+maximum <- max(songs)
+minimum <- min(songs)
+```
+
+```{r}
+# create variable song_range here:
+song_range <- maximum - minimum
+```
+
+```{r message=FALSE, echo=FALSE}
+# plot histogram
+hist <- qplot(songs,
+              geom="histogram",
+              main = 'Histogram of Song Lengths',
+              xlab = 'Song Length (Seconds)',
+              ylab = 'Count',
+              fill=I("blue"),
+              col=I("red"),
+              alpha=I(.2))
+hist
+```
+
+```{r}
+# ignore the code below here:
+
+tryCatch(print(paste("The range of the dataset is",song_range)), error=function(e) {print("You haven't defined the variable song_range yet")})
+```
+
+#--------------------------------quartiles--------------------------------
+
+The interquartile range is the difference between the third quartile (Q3) and the first quartile (Q1).
+
+---
+title: "Interquartile Range"
+output: html_notebook
+---
+
+```{r}
+# load song data
+load("songs.Rda")
+```
+
+```{r}
+# find the first quartile
+q1 <- quantile(songs,0.25)
+```
+
+```{r}
+# calculate the third quartile here:
+q3 <- quantile(songs,0.75)
+```
+
+```{r}
+# calculate the interquartile range here:
+interquartile_range <- q3 - q1
+```
+
+```{r}
+# ignore the code below here:
+
+tryCatch(print(paste("The first quartile of the dataset is",q1)), error=function(e) {print("You haven't defined q1 yet")})
+
+tryCatch(print(paste("The third quartile of the dataset is",q3)), error=function(e) {print("You haven't defined q3 yet")})
+
+tryCatch(print(paste("The IQR of the dataset is",interquartile_range)), error=function(e) {print("You haven't defined interquartile_range yet")})
+```
+
+#--------------------------------iqr in r--------------------------------
+
+The IQR() function takes a dataset as a parameter and returns the Interquartile Range.
+
+dataset = c(4, 10, 38, 85, 193)
+interquartile_range = IQR(dataset)
+
+---
+title: "Interquartile Range"
+output: html_notebook
+---
+
+```{r}
+# load song data
+load("songs.Rda")
+```
+
+```{r}
+# create the variable interquartile_range here
+interquartile_range <- IQR(songs)
+```
+
+```{r}
+# ignore the code below here:
+
+tryCatch(print(paste("The IQR of the dataset is",interquartile_range)), error=function(e) {print("You haven't defined interquartile_range yet")})
+```
+
+#--------------------------------review--------------------------------
+
+The interquartile range is displayed in a commonly-used graph — the box plot.
+In a box plot, the ends of the box are Q1 and Q3. So the length of the box is the IQR.
+
+---
+title: "Interquartile Range"
+output: html_notebook
+---
+
+```{r}
+# small dataset
+dataset = c(-50, -24, -13, -2, 0, 12, 15, 18, 73, 90, 100)
+
+# calculate range and IQR
+dataset_range = max(dataset) - min(dataset)
+dataset_iqr = IQR(dataset)
+
+# print range and IQR
+print(paste("The range of the dataset is ",dataset_range))
+print(paste("The IQR of the dataset is ",dataset_iqr))
+```
